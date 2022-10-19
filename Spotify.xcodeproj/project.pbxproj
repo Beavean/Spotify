@@ -15,6 +15,7 @@
 		080FBDF328F5AAEF00D71902 /* Factories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080FBDF228F5AAEF00D71902 /* Factories.swift */; };
 		08988E4E290093BC00FE7A5D /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08988E4D290093BC00FE7A5D /* HomeController.swift */; };
 		08988E502900941A00FE7A5D /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08988E4F2900941A00FE7A5D /* MenuBar.swift */; };
+		08988E52290098B600FE7A5D /* PlaylistCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08988E51290098B600FE7A5D /* PlaylistCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		080FBDF228F5AAEF00D71902 /* Factories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Factories.swift; sourceTree = "<group>"; };
 		08988E4D290093BC00FE7A5D /* HomeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
 		08988E4F2900941A00FE7A5D /* MenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
+		08988E51290098B600FE7A5D /* PlaylistCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +66,7 @@
 				080FBDDE28F585E000D71902 /* TitleBarController.swift */,
 				08988E4D290093BC00FE7A5D /* HomeController.swift */,
 				08988E4F2900941A00FE7A5D /* MenuBar.swift */,
+				08988E51290098B600FE7A5D /* PlaylistCell.swift */,
 				080FBDF228F5AAEF00D71902 /* Factories.swift */,
 				080FBDF028F58FF800D71902 /* Container.swift */,
 				080FBDEF28F5864D00D71902 /* Files */,
@@ -152,6 +155,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				080FBDDF28F585E000D71902 /* TitleBarController.swift in Sources */,
+				08988E52290098B600FE7A5D /* PlaylistCell.swift in Sources */,
 				080FBDF128F58FF800D71902 /* Container.swift in Sources */,
 				08988E502900941A00FE7A5D /* MenuBar.swift in Sources */,
 				080FBDF328F5AAEF00D71902 /* Factories.swift in Sources */,
