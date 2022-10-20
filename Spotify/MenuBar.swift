@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol MenuBarDelegate: AnyObject {
+    func didSelectItemAt(index: Int)
+}
+
 class MenuBar: UIView {
     
     let playlistsButton: UIButton!
@@ -14,8 +18,15 @@ class MenuBar: UIView {
     let albumsButton: UIButton!
     var buttons: [UIButton]!
     
+    let indicator = UIView()
+    
+    var indicatorLeading: NSLayoutConstraint?
+    var indicatorTrailing: NSLayoutConstraint?
+    
     let leadPadding: CGFloat = 16
     let buttonSpace: CGFloat = 36
+    
+    weak var delegate: MenuBarDelegate?
     
     override init(frame: CGRect) {
         playlistsButton = makeButton(withText: "Playlists")
@@ -30,6 +41,8 @@ class MenuBar: UIView {
         artistsButton.addTarget(self, action: #selector(artistsButtonTapped), for: .primaryActionTriggered)
         albumsButton.addTarget(self, action: #selector(albumsButtonTapped), for: .primaryActionTriggered)
         
+        styleIndicator()
+        setAlpha(for: playlistsButton)
         layout()
     }
     
@@ -37,10 +50,16 @@ class MenuBar: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private func styleIndicator() {
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.backgroundColor = .spotifyGreen
+    }
+    
     private func layout() {
         addSubview(playlistsButton)
         addSubview(artistsButton)
         addSubview(albumsButton)
+        addSubview(indicator)
         
         NSLayoutConstraint.activate([
             playlistsButton.topAnchor.constraint(equalTo: topAnchor),
@@ -49,24 +68,153 @@ class MenuBar: UIView {
             artistsButton.leadingAnchor.constraint(equalTo: playlistsButton.trailingAnchor, constant: buttonSpace),
             albumsButton.topAnchor.constraint(equalTo: topAnchor),
             albumsButton.leadingAnchor.constraint(equalTo: artistsButton.trailingAnchor, constant: buttonSpace),
+            
+            indicator.bottomAnchor.constraint(equalTo: bottomAnchor),
+            indicator.heightAnchor.constraint(equalToConstant: 3)
         ])
+        indicatorLeading = indicator.leadingAnchor.constraint(equalTo: playlistsButton.leadingAnchor)
+        indicatorTrailing = indicator.trailingAnchor.constraint(equalTo: playlistsButton.trailingAnchor)
+        indicatorLeading?.isActive = true
+        indicatorTrailing?.isActive = true
     }
 }
 
 extension MenuBar {
     
     @objc func playlistsButtonTapped() {
-        
+        delegate?.didSelectItemAt(index: 0)
     }
     
     @objc func artistsButtonTapped() {
-        
+        delegate?.didSelectItemAt(index: 1)
     }
     
     @objc func albumsButtonTapped() {
-        
+        delegate?.didSelectItemAt(index: 2)
+    }
+}
+
+extension MenuBar {
+    
+    func selectItem(at index: Int) {
+        animateIndicator(to: index)
     }
     
+    private func animateIndicator(to index: Int) {
+        var button: UIButton
+        switch index {
+        case 0:
+            button = playlistsButton
+        case 1:
+            button = artistsButton
+        case 2:
+            button = albumsButton
+        default:
+            button = playlistsButton
+        }
+        setAlpha(for: button)
+        UIView.animate(withDuration: 0.3) {
+            self.layoutIfNeeded()
+        }
+    }
+    
+    private func setAlpha(for button: UIButton) {
+        playlistsButton.alpha = 0.5
+        artistsButton.alpha = 0.5
+        albumsButton.alpha = 0.5
+        
+        button.alpha = 1.0
+    }
+    
+    func scrollIndicator(to contentOffset: CGPoint) {
+        let index = Int(contentOffset.x / frame.width)
+        let atScrollStart = Int(contentOffset.x) % Int(frame.width) == 0
+        
+        if atScrollStart {
+            return
+        }
+        
+        let percentScrolled: CGFloat
+        switch index {
+        case 0:
+            percentScrolled = contentOffset.x / frame.width - 0
+        case 1:
+            percentScrolled = contentOffset.x / frame.width - 1
+        case 2:
+            percentScrolled = contentOffset.x / frame.width - 2
+        default:
+            percentScrolled = contentOffset.x / frame.width
+        }
+        
+        var fromButton: UIButton
+        var toButton: UIButton
+        
+        switch index {
+        case 2:
+            fromButton = buttons[index]
+            toButton = buttons[index - 1]
+        default:
+            fromButton = buttons[index]
+            toButton = buttons[index + 1]
+        }
+        
+        switch index {
+        case 2:
+            break
+        default:
+            fromButton.alpha = fmax(0.5, (1 - percentScrolled))
+            toButton.alpha = fmax(0.5, percentScrolled)
+        }
+        
+        let fromWidth = fromButton.frame.width
+        let toWidth = toButton.frame.width
+        
+        let sectionWidth: CGFloat
+        switch index {
+        case 0:
+            sectionWidth = leadPadding + fromWidth + buttonSpace
+        default:
+            sectionWidth = fromWidth + buttonSpace
+        }
+        
+        let sectionFraction = sectionWidth / frame.width
+        let x = contentOffset.x * sectionFraction
+        
+        let buttonWidthDiff = fromWidth - toWidth
+        let widthOffset = buttonWidthDiff * percentScrolled
+        
+        let y: CGFloat
+        switch index {
+        case 0:
+            if x < leadPadding {
+                y = x
+            } else {
+                y = x - leadPadding * percentScrolled
+            }
+        case 1:
+            y = x + 13
+        case 2:
+            y = x
+        default:
+            y = x
+        }
+        
+        indicatorLeading?.constant = y
+        
+        let yTrailing: CGFloat
+        switch index {
+        case 0:
+            yTrailing = y - widthOffset
+        case 1:
+            yTrailing = y - widthOffset - leadPadding
+        case 2:
+            yTrailing = y - widthOffset - leadPadding / 2
+        default:
+            yTrailing = y - widthOffset - leadPadding
+        }
+        
+        indicatorTrailing?.constant = yTrailing
+    }
 }
 
 func makeButton(withText text: String) -> UIButton {
