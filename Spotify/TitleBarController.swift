@@ -7,22 +7,6 @@
 
 import UIKit
 
-class MusicViewController: UIViewController {
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .systemBlue
-    }
-}
-
-class PodcastViewController: UIViewController {
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .systemYellow
-    }
-}
-
 class TitleBarController: UIViewController {
     
     //MARK: - Properties
@@ -30,7 +14,7 @@ class TitleBarController: UIViewController {
     var musicBarButtonItem: UIBarButtonItem!
     var podcastBarButtonItem: UIBarButtonItem!
     let container = Container()
-    let viewControllers: [UIViewController] = [MusicViewController(), PodcastViewController()]
+    let viewControllers: [UIViewController] = [HomeController(), HomeController()]
     
     //MARK: - Lifecycle
     
